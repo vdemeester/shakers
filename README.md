@@ -1,3 +1,3 @@
 # 🐹 + 🐙 = 😽
 
-… to be written :3
+… A golang project to be written :3
