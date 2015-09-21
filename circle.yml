@@ -1,0 +1,13 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - make validate
+  override:
+    - make binary
+
+test:
+  override:
+    - make test-unit
