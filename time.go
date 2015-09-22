@@ -82,7 +82,7 @@ func isAfter(value, t interface{}) (bool, string) {
 var IsBetween check.Checker = &isBetweenChecker{
 	&check.CheckerInfo{
 		Name:   "IsBetween",
-		Params: []string{"time", "start", "end"},
+		Params: []string{"value", "start", "end"},
 	},
 }
 
@@ -108,6 +108,104 @@ func isBetween(value, start, end interface{}) (bool, string) {
 		return valueTime.After(startTime) && valueTime.Before(endTime), ""
 	}
 	return false, "Obtained value is not a time.Time struct or parseable as a time."
+}
+
+// TimeEquals checker verifies the specified time is the equal to the expected
+// time.
+//
+//    c.Assert(myTime, TimeEquals, expected, check.Commentf("bouhhh"))
+//
+// It's possible to ignore some part of the time (like hours, minutes, etc..) using
+// the TimeIgnore checker with it.
+//
+//    c.Assert(myTime, TimeIgnore(TimeEquals, time.Hour), expected, check.Commentf("... bouh.."))
+//
+var TimeEquals check.Checker = &timeEqualsChecker{
+	&check.CheckerInfo{
+		Name:   "TimeEquals",
+		Params: []string{"value", "expected"},
+	},
+}
+
+type timeEqualsChecker struct {
+	*check.CheckerInfo
+}
+
+func (checker *timeEqualsChecker) Check(params []interface{}, names []string) (bool, string) {
+	return timeEquals(params[0], params[1])
+}
+
+func timeEquals(value, expected interface{}) (bool, string) {
+	expectedTime, ok := parseTime(expected)
+	if !ok {
+		return false, "Time must be a Time struct, or parseable."
+	}
+	valueTime, valueIsTime := parseTime(value)
+	if valueIsTime {
+		return valueTime.Equal(expectedTime), ""
+	}
+	return false, "Obtained value is not a time.Time struct or parseable as a time."
+}
+
+// TimeIgnore checker will ignore some part of the time on the encapsulated checker.
+//
+//    c.Assert(myTime, TimeIgnore(IsBetween, time.Second), start, end)
+//
+// FIXME use interface{} for ignore (to enable "Month", ..
+func TimeIgnore(checker check.Checker, ignore time.Duration) check.Checker {
+	return &timeIgnoreChecker{
+		sub:    checker,
+		ignore: ignore,
+	}
+}
+
+type timeIgnoreChecker struct {
+	sub    check.Checker
+	ignore time.Duration
+}
+
+func (checker *timeIgnoreChecker) Info() *check.CheckerInfo {
+	info := *checker.sub.Info()
+	info.Name = fmt.Sprintf("TimeIgnore(%s, %v)", info.Name, checker.ignore)
+	return &info
+}
+
+func (checker *timeIgnoreChecker) Check(params []interface{}, names []string) (bool, string) {
+	// Naive implementation : all params are supposed to be date
+	mParams := make([]interface{}, len(params))
+	for index, param := range params {
+		paramTime, ok := parseTime(param)
+		if !ok {
+			return false, fmt.Sprintf("%s must be a Time struct, or parseable.", names[index])
+		}
+		year := paramTime.Year()
+		month := paramTime.Month()
+		day := paramTime.Day()
+		hour := paramTime.Hour()
+		min := paramTime.Minute()
+		sec := paramTime.Second()
+		nsec := paramTime.Nanosecond()
+		location := paramTime.Location()
+		switch checker.ignore {
+		case time.Hour:
+			hour = 0
+			fallthrough
+		case time.Minute:
+			min = 0
+			fallthrough
+		case time.Second:
+			sec = 0
+			fallthrough
+		case time.Millisecond:
+			fallthrough
+		case time.Microsecond:
+			fallthrough
+		case time.Nanosecond:
+			nsec = 0
+		}
+		mParams[index] = time.Date(year, month, day, hour, min, sec, nsec, location)
+	}
+	return checker.sub.Check(mParams, names)
 }
 
 func parseTime(datetime interface{}) (time.Time, bool) {
