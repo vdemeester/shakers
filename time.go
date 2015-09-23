@@ -18,7 +18,7 @@ const shortForm = "2006-01-02"
 var IsBefore check.Checker = &isBeforeChecker{
 	&check.CheckerInfo{
 		Name:   "IsBefore",
-		Params: []string{"value", "time"},
+		Params: []string{"obtained", "expected"},
 	},
 }
 
@@ -33,13 +33,13 @@ func (checker *isBeforeChecker) Check(params []interface{}, names []string) (boo
 func isBefore(value, t interface{}) (bool, string) {
 	tTime, ok := parseTime(t)
 	if !ok {
-		return false, "Time must be a Time struct, or parseable."
+		return false, "expected must be a Time struct, or parseable."
 	}
 	valueTime, valueIsTime := parseTime(value)
 	if valueIsTime {
 		return valueTime.Before(tTime), ""
 	}
-	return false, "Obtained value is not a time.Time struct or parseable as a time."
+	return false, "obtained value is not a time.Time struct or parseable as a time."
 }
 
 // IsAfter checker verifies the specified value is before the specified time.
@@ -50,7 +50,7 @@ func isBefore(value, t interface{}) (bool, string) {
 var IsAfter check.Checker = &isAfterChecker{
 	&check.CheckerInfo{
 		Name:   "IsAfter",
-		Params: []string{"value", "time"},
+		Params: []string{"obtained", "expected"},
 	},
 }
 
@@ -65,13 +65,13 @@ func (checker *isAfterChecker) Check(params []interface{}, names []string) (bool
 func isAfter(value, t interface{}) (bool, string) {
 	tTime, ok := parseTime(t)
 	if !ok {
-		return false, "Time must be a Time struct, or parseable."
+		return false, "expected must be a Time struct, or parseable."
 	}
 	valueTime, valueIsTime := parseTime(value)
 	if valueIsTime {
 		return valueTime.After(tTime), ""
 	}
-	return false, "Obtained value is not a time.Time struct or parseable as a time."
+	return false, "obtained value is not a time.Time struct or parseable as a time."
 }
 
 // IsBetween checker verifies the specified time is between the specified start
@@ -82,7 +82,7 @@ func isAfter(value, t interface{}) (bool, string) {
 var IsBetween check.Checker = &isBetweenChecker{
 	&check.CheckerInfo{
 		Name:   "IsBetween",
-		Params: []string{"value", "start", "end"},
+		Params: []string{"obtained", "start", "end"},
 	},
 }
 
@@ -97,17 +97,17 @@ func (checker *isBetweenChecker) Check(params []interface{}, names []string) (bo
 func isBetween(value, start, end interface{}) (bool, string) {
 	startTime, ok := parseTime(start)
 	if !ok {
-		return false, "Start must be a Time struct, or parseable."
+		return false, "start must be a Time struct, or parseable."
 	}
 	endTime, ok := parseTime(end)
 	if !ok {
-		return false, "End must be a Time struct, or parseable."
+		return false, "end must be a Time struct, or parseable."
 	}
 	valueTime, valueIsTime := parseTime(value)
 	if valueIsTime {
 		return valueTime.After(startTime) && valueTime.Before(endTime), ""
 	}
-	return false, "Obtained value is not a time.Time struct or parseable as a time."
+	return false, "obtained value is not a time.Time struct or parseable as a time."
 }
 
 // TimeEquals checker verifies the specified time is the equal to the expected
@@ -123,7 +123,7 @@ func isBetween(value, start, end interface{}) (bool, string) {
 var TimeEquals check.Checker = &timeEqualsChecker{
 	&check.CheckerInfo{
 		Name:   "TimeEquals",
-		Params: []string{"value", "expected"},
+		Params: []string{"obtained", "expected"},
 	},
 }
 
@@ -135,16 +135,16 @@ func (checker *timeEqualsChecker) Check(params []interface{}, names []string) (b
 	return timeEquals(params[0], params[1])
 }
 
-func timeEquals(value, expected interface{}) (bool, string) {
+func timeEquals(obtained, expected interface{}) (bool, string) {
 	expectedTime, ok := parseTime(expected)
 	if !ok {
-		return false, "Time must be a Time struct, or parseable."
+		return false, "expected must be a Time struct, or parseable."
 	}
-	valueTime, valueIsTime := parseTime(value)
+	valueTime, valueIsTime := parseTime(obtained)
 	if valueIsTime {
 		return valueTime.Equal(expectedTime), ""
 	}
-	return false, "Obtained value is not a time.Time struct or parseable as a time."
+	return false, "obtained value is not a time.Time struct or parseable as a time."
 }
 
 // TimeIgnore checker will ignore some part of the time on the encapsulated checker.
