@@ -10,8 +10,6 @@ func init() {
 
 type StringCheckerS struct{}
 
-var _ = check.Suite(&StringCheckerS{})
-
 func (s *StringCheckerS) TestContains(c *check.C) {
 	testInfo(c, Contains, "Contains", []string{"value", "substring"})
 

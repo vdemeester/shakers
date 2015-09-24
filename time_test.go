@@ -12,676 +12,674 @@ func init() {
 
 type TimeCheckerS struct{}
 
-var _ = check.Suite(&TimeCheckerS{})
-
 type randomStruct struct {
 	foo string
 	baz int
 }
 
 func (s *TimeCheckerS) TestIsBefore(c *check.C) {
-	testInfo(c, IsBefore, "IsBefore", []string{"value", "time"})
+	testInfo(c, IsBefore, "IsBefore", []string{"obtained", "expected"})
 }
 
 func (s *TimeCheckerS) TestIsAfter(c *check.C) {
-	testInfo(c, IsAfter, "IsAfter", []string{"value", "time"})
+	testInfo(c, IsAfter, "IsAfter", []string{"obtained", "expected"})
 }
 
 func (s *TimeCheckerS) TestIsBetweenInfo(c *check.C) {
-	testInfo(c, IsBetween, "IsBetween", []string{"value", "start", "end"})
+	testInfo(c, IsBetween, "IsBetween", []string{"obtained", "start", "end"})
 }
 
 func (s *TimeCheckerS) TestTimeEquals(c *check.C) {
-	testInfo(c, TimeEquals, "TimeEquals", []string{"value", "expected"})
+	testInfo(c, TimeEquals, "TimeEquals", []string{"obtained", "expected"})
 }
 
 func (s *TimeCheckerS) TestTimeIgnore(c *check.C) {
-	testInfo(c, TimeIgnore(TimeEquals, time.Second), "TimeIgnore(TimeEquals, 1s)", []string{"value", "expected"})
-	testInfo(c, TimeIgnore(IsBefore, time.Minute), "TimeIgnore(IsBefore, 1m0s)", []string{"value", "time"})
-	testInfo(c, TimeIgnore(IsBetween, time.Hour), "TimeIgnore(IsBetween, 1h0m0s)", []string{"value", "start", "end"})
+	testInfo(c, TimeIgnore(TimeEquals, time.Second), "TimeIgnore(TimeEquals, 1s)", []string{"obtained", "expected"})
+	testInfo(c, TimeIgnore(IsBefore, time.Minute), "TimeIgnore(IsBefore, 1m0s)", []string{"obtained", "expected"})
+	testInfo(c, TimeIgnore(IsBetween, time.Hour), "TimeIgnore(IsBetween, 1h0m0s)", []string{"obtained", "start", "end"})
 }
 
 func (s *TimeCheckerS) TestIsBeforeValid(c *check.C) {
 	before := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-01",
-			t:     "2018-01-02",
+			obtained: "2018-01-01",
+			t:        "2018-01-02",
 		},
 		{
-			value: "2018-01-01T15:04:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-01T15:04:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:03:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:03:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-01T15:04:05+07:00",
-			t:     "2018-01-02T15:04:05+07:00",
+			obtained: "2018-01-01T15:04:05+07:00",
+			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:03:05+07:00",
-			t:     "2018-01-02T15:04:05+07:00",
+			obtained: "2018-01-02T15:03:05+07:00",
+			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05+08:00",
-			t:     "2018-01-02T15:04:05+07:00",
+			obtained: "2018-01-02T15:04:05+08:00",
+			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05-06:00",
-			t:     "2018-01-02T15:04:05-07:00",
+			obtained: "2018-01-02T15:04:05-06:00",
+			t:        "2018-01-02T15:04:05-07:00",
 		},
 		{
-			value: "2018-01-01T15:04:05.999999999Z",
-			t:     "2018-01-02T15:04:05.999999999Z",
+			obtained: "2018-01-01T15:04:05.999999999Z",
+			t:        "2018-01-02T15:04:05.999999999Z",
 		},
 		{
-			value: "2018-01-02T15:03:05.999999999Z",
-			t:     "2018-01-02T15:04:05.999999999Z",
+			obtained: "2018-01-02T15:03:05.999999999Z",
+			t:        "2018-01-02T15:04:05.999999999Z",
 		},
 		{
-			value: "2018-01-01T15:04:05.999999999+07:00",
-			t:     "2018-01-02T15:04:05.999999999+07:00",
+			obtained: "2018-01-01T15:04:05.999999999+07:00",
+			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:03:05.999999999+07:00",
-			t:     "2018-01-02T15:04:05.999999999+07:00",
+			obtained: "2018-01-02T15:03:05.999999999+07:00",
+			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+08:00",
-			t:     "2018-01-02T15:04:05.999999999+07:00",
+			obtained: "2018-01-02T15:04:05.999999999+08:00",
+			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-06:00",
-			t:     "2018-01-02T15:04:05.999999999-07:00",
+			obtained: "2018-01-02T15:04:05.999999999-06:00",
+			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
-			value: "01 Jan 18 15:04 MST",
-			t:     "02 Jan 18 15:04 MST",
+			obtained: "01 Jan 18 15:04 MST",
+			t:        "02 Jan 18 15:04 MST",
 		},
 		{
-			value: "01 Jan 18 15:03 MST",
-			t:     "01 Jan 18 15:04 MST",
+			obtained: "01 Jan 18 15:03 MST",
+			t:        "01 Jan 18 15:04 MST",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			t:     "02 Jan 18 15:04 +0700",
+			obtained: "01 Jan 18 15:04 +0700",
+			t:        "02 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:03 +0700",
-			t:     "01 Jan 18 15:04 +0700",
+			obtained: "01 Jan 18 15:03 +0700",
+			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 +0800",
-			t:     "01 Jan 18 15:04 +0700",
+			obtained: "01 Jan 18 15:04 +0800",
+			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 -0600",
-			t:     "01 Jan 18 15:04 -0700",
+			obtained: "01 Jan 18 15:04 -0600",
+			t:        "01 Jan 18 15:04 -0700",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, IsBefore, true, "", d.value, d.t)
+		testCheck(c, IsBefore, true, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBeforeValidAfter(c *check.C) {
 	after := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-12",
-			t:     "2018-01-02",
+			obtained: "2018-01-12",
+			t:        "2018-01-02",
 		},
 		{
-			value: "2018-01-12T15:04:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-12T15:04:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:05:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:05:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+06:00",
-			t:     "2018-01-02T15:04:05+07:00",
+			obtained: "2018-01-02T15:04:05+06:00",
+			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999995Z",
-			t:     "2018-01-02T15:04:05.999999990Z",
+			obtained: "2018-01-02T15:04:05.999999995Z",
+			t:        "2018-01-02T15:04:05.999999990Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-07:00",
-			t:     "2018-01-02T15:04:05.999999999-06:00",
+			obtained: "2018-01-02T15:04:05.999999999-07:00",
+			t:        "2018-01-02T15:04:05.999999999-06:00",
 		},
 		{
-			value: "02 Jan 18 15:05 MST",
-			t:     "02 Jan 18 15:04 MST",
+			obtained: "02 Jan 18 15:05 MST",
+			t:        "02 Jan 18 15:04 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0700",
-			t:     "02 Jan 18 15:04 +0800",
+			obtained: "02 Jan 18 15:04 +0700",
+			t:        "02 Jan 18 15:04 +0800",
 		},
 		{
-			value: "2018-01-02",
-			t:     "2018-01-02",
+			obtained: "2018-01-02",
+			t:        "2018-01-02",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, IsBefore, false, "", d.value, d.t)
+		testCheck(c, IsBefore, false, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBeforeInvalids(c *check.C) {
 	// Nils
-	testCheck(c, IsBefore, false, "Time must be a Time struct, or parseable.", time.Now(), nil)
-	testCheck(c, IsBefore, false, "Obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
+	testCheck(c, IsBefore, false, "expected must be a Time struct, or parseable.", time.Now(), nil)
+	testCheck(c, IsBefore, false, "obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
 
 	// wrong type
-	testCheck(c, IsBefore, false, "Time must be a Time struct, or parseable.", time.Now(), 0)
-	testCheck(c, IsBefore, false, "Obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
-	testCheck(c, IsBefore, false, "Time must be a Time struct, or parseable.", time.Now(), randomStruct{})
-	testCheck(c, IsBefore, false, "Obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
+	testCheck(c, IsBefore, false, "expected must be a Time struct, or parseable.", time.Now(), 0)
+	testCheck(c, IsBefore, false, "obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
+	testCheck(c, IsBefore, false, "expected must be a Time struct, or parseable.", time.Now(), randomStruct{})
+	testCheck(c, IsBefore, false, "obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
 
 	// Invalid strings
-	testCheck(c, IsBefore, false, "Time must be a Time struct, or parseable.", time.Now(), "this is not a date")
-	testCheck(c, IsBefore, false, "Obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
+	testCheck(c, IsBefore, false, "expected must be a Time struct, or parseable.", time.Now(), "this is not a date")
+	testCheck(c, IsBefore, false, "obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
 
 	// Invalids dates
-	testCheck(c, IsBefore, false, "Time must be a Time struct, or parseable.", time.Now(), "2018-31-02")
-	testCheck(c, IsBefore, false, "Obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
+	testCheck(c, IsBefore, false, "expected must be a Time struct, or parseable.", time.Now(), "2018-31-02")
+	testCheck(c, IsBefore, false, "obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
 
 }
 
 func (s *TimeCheckerS) TestIsAfterValid(c *check.C) {
 	before := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-02",
-			t:     "2018-01-01",
+			obtained: "2018-01-02",
+			t:        "2018-01-01",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-01T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-01T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-02T15:03:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-02T15:03:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			t:     "2018-01-01T15:04:05+07:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			t:        "2018-01-01T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			t:     "2018-01-02T15:03:05+07:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			t:        "2018-01-02T15:03:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			t:     "2018-01-02T15:04:05+08:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			t:        "2018-01-02T15:04:05+08:00",
 		},
 		{
-			value: "2018-01-02T15:04:05-07:00",
-			t:     "2018-01-02T15:04:05-06:00",
+			obtained: "2018-01-02T15:04:05-07:00",
+			t:        "2018-01-02T15:04:05-06:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999Z",
-			t:     "2018-01-01T15:04:05.999999999Z",
+			obtained: "2018-01-02T15:04:05.999999999Z",
+			t:        "2018-01-01T15:04:05.999999999Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999Z",
-			t:     "2018-01-02T15:03:05.999999999Z",
+			obtained: "2018-01-02T15:04:05.999999999Z",
+			t:        "2018-01-02T15:03:05.999999999Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			t:     "2018-01-01T15:04:05.999999999+07:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			t:        "2018-01-01T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			t:     "2018-01-02T15:03:05.999999999+07:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			t:        "2018-01-02T15:03:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			t:     "2018-01-02T15:04:05.999999999+08:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			t:        "2018-01-02T15:04:05.999999999+08:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-07:00",
-			t:     "2018-01-02T15:04:05.999999999-06:00",
+			obtained: "2018-01-02T15:04:05.999999999-07:00",
+			t:        "2018-01-02T15:04:05.999999999-06:00",
 		},
 		{
-			value: "02 Jan 18 15:04 MST",
-			t:     "01 Jan 18 15:04 MST",
+			obtained: "02 Jan 18 15:04 MST",
+			t:        "01 Jan 18 15:04 MST",
 		},
 		{
-			value: "01 Jan 18 15:04 MST",
-			t:     "01 Jan 18 15:03 MST",
+			obtained: "01 Jan 18 15:04 MST",
+			t:        "01 Jan 18 15:03 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0700",
-			t:     "01 Jan 18 15:04 +0700",
+			obtained: "02 Jan 18 15:04 +0700",
+			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			t:     "01 Jan 18 15:03 +0700",
+			obtained: "01 Jan 18 15:04 +0700",
+			t:        "01 Jan 18 15:03 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			t:     "01 Jan 18 15:04 +0800",
+			obtained: "01 Jan 18 15:04 +0700",
+			t:        "01 Jan 18 15:04 +0800",
 		},
 		{
-			value: "01 Jan 18 15:04 -0700",
-			t:     "01 Jan 18 15:04 -0600",
+			obtained: "01 Jan 18 15:04 -0700",
+			t:        "01 Jan 18 15:04 -0600",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, IsAfter, true, "", d.value, d.t)
+		testCheck(c, IsAfter, true, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsAfterValidBefore(c *check.C) {
 	after := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-02",
-			t:     "2018-01-12",
+			obtained: "2018-01-02",
+			t:        "2018-01-12",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-12T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-12T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-02T15:05:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-02T15:05:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			t:     "2018-01-02T15:04:05+06:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			t:        "2018-01-02T15:04:05+06:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999990Z",
-			t:     "2018-01-02T15:04:05.999999995Z",
+			obtained: "2018-01-02T15:04:05.999999990Z",
+			t:        "2018-01-02T15:04:05.999999995Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-06:00",
-			t:     "2018-01-02T15:04:05.999999999-07:00",
+			obtained: "2018-01-02T15:04:05.999999999-06:00",
+			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
-			value: "02 Jan 18 15:04 MST",
-			t:     "02 Jan 18 15:05 MST",
+			obtained: "02 Jan 18 15:04 MST",
+			t:        "02 Jan 18 15:05 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0800",
-			t:     "02 Jan 18 15:04 +0700",
+			obtained: "02 Jan 18 15:04 +0800",
+			t:        "02 Jan 18 15:04 +0700",
 		},
 		{
-			value: "2018-01-02",
-			t:     "2018-01-02",
+			obtained: "2018-01-02",
+			t:        "2018-01-02",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, IsAfter, false, "", d.value, d.t)
+		testCheck(c, IsAfter, false, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsAfterInvalids(c *check.C) {
 	// Nils
-	testCheck(c, IsAfter, false, "Time must be a Time struct, or parseable.", time.Now(), nil)
-	testCheck(c, IsAfter, false, "Obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
+	testCheck(c, IsAfter, false, "expected must be a Time struct, or parseable.", time.Now(), nil)
+	testCheck(c, IsAfter, false, "obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
 
 	// wrong type
-	testCheck(c, IsAfter, false, "Time must be a Time struct, or parseable.", time.Now(), 0)
-	testCheck(c, IsAfter, false, "Obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
-	testCheck(c, IsAfter, false, "Time must be a Time struct, or parseable.", time.Now(), randomStruct{})
-	testCheck(c, IsAfter, false, "Obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
+	testCheck(c, IsAfter, false, "expected must be a Time struct, or parseable.", time.Now(), 0)
+	testCheck(c, IsAfter, false, "obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
+	testCheck(c, IsAfter, false, "expected must be a Time struct, or parseable.", time.Now(), randomStruct{})
+	testCheck(c, IsAfter, false, "obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
 
 	// Invalid strings
-	testCheck(c, IsAfter, false, "Time must be a Time struct, or parseable.", time.Now(), "this is not a date")
-	testCheck(c, IsAfter, false, "Obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
+	testCheck(c, IsAfter, false, "expected must be a Time struct, or parseable.", time.Now(), "this is not a date")
+	testCheck(c, IsAfter, false, "obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
 
 	// Invalids dates
-	testCheck(c, IsAfter, false, "Time must be a Time struct, or parseable.", time.Now(), "2018-31-02")
-	testCheck(c, IsAfter, false, "Obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
+	testCheck(c, IsAfter, false, "expected must be a Time struct, or parseable.", time.Now(), "2018-31-02")
+	testCheck(c, IsAfter, false, "obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
 
 }
 
 func (s *TimeCheckerS) TestIsBetweenValidBetween(c *check.C) {
 	between := []struct {
-		value interface{}
-		start interface{}
-		end   interface{}
+		obtained interface{}
+		start    interface{}
+		end      interface{}
 	}{
 		{
-			value: "2018-01-02",
-			start: "2018-01-01",
-			end:   "2018-01-03",
+			obtained: "2018-01-02",
+			start:    "2018-01-01",
+			end:      "2018-01-03",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-01T15:04:05Z",
-			end:   "2018-01-03T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-01T15:04:05Z",
+			end:      "2018-01-03T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-02T15:03:05Z",
-			end:   "2018-01-02T15:05:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-02T15:03:05Z",
+			end:      "2018-01-02T15:05:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			start: "2018-01-01T15:04:05+07:00",
-			end:   "2018-01-03T15:04:05+07:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			start:    "2018-01-01T15:04:05+07:00",
+			end:      "2018-01-03T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			start: "2018-01-02T15:03:05+07:00",
-			end:   "2018-01-02T15:05:05+07:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			start:    "2018-01-02T15:03:05+07:00",
+			end:      "2018-01-02T15:05:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			start: "2018-01-02T15:04:05+08:00",
-			end:   "2018-01-02T15:04:05+06:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			start:    "2018-01-02T15:04:05+08:00",
+			end:      "2018-01-02T15:04:05+06:00",
 		},
 		{
-			value: "2018-01-02T15:04:05-07:00",
-			start: "2018-01-02T15:04:05-06:00",
-			end:   "2018-01-02T15:04:05-08:00",
+			obtained: "2018-01-02T15:04:05-07:00",
+			start:    "2018-01-02T15:04:05-06:00",
+			end:      "2018-01-02T15:04:05-08:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999Z",
-			start: "2018-01-01T15:04:05.999999999Z",
-			end:   "2018-01-03T15:04:05.999999999Z",
+			obtained: "2018-01-02T15:04:05.999999999Z",
+			start:    "2018-01-01T15:04:05.999999999Z",
+			end:      "2018-01-03T15:04:05.999999999Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999Z",
-			start: "2018-01-02T15:03:05.999999999Z",
-			end:   "2018-01-02T15:05:05.999999999Z",
+			obtained: "2018-01-02T15:04:05.999999999Z",
+			start:    "2018-01-02T15:03:05.999999999Z",
+			end:      "2018-01-02T15:05:05.999999999Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			start: "2018-01-01T15:04:05.999999999+07:00",
-			end:   "2018-01-03T15:04:05.999999999+07:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			start:    "2018-01-01T15:04:05.999999999+07:00",
+			end:      "2018-01-03T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			start: "2018-01-02T15:03:05.999999999+07:00",
-			end:   "2018-01-02T15:05:05.999999999+07:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			start:    "2018-01-02T15:03:05.999999999+07:00",
+			end:      "2018-01-02T15:05:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999+07:00",
-			start: "2018-01-02T15:04:05.999999999+08:00",
-			end:   "2018-01-02T15:04:05.999999999+06:00",
+			obtained: "2018-01-02T15:04:05.999999999+07:00",
+			start:    "2018-01-02T15:04:05.999999999+08:00",
+			end:      "2018-01-02T15:04:05.999999999+06:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-07:00",
-			start: "2018-01-02T15:04:05.999999999-06:00",
-			end:   "2018-01-02T15:04:05.999999999-08:00",
+			obtained: "2018-01-02T15:04:05.999999999-07:00",
+			start:    "2018-01-02T15:04:05.999999999-06:00",
+			end:      "2018-01-02T15:04:05.999999999-08:00",
 		},
 		{
-			value: "02 Jan 18 15:04 MST",
-			start: "01 Jan 18 15:04 MST",
-			end:   "03 Jan 18 15:04 MST",
+			obtained: "02 Jan 18 15:04 MST",
+			start:    "01 Jan 18 15:04 MST",
+			end:      "03 Jan 18 15:04 MST",
 		},
 		{
-			value: "01 Jan 18 15:04 MST",
-			start: "01 Jan 18 15:03 MST",
-			end:   "01 Jan 18 15:05 MST",
+			obtained: "01 Jan 18 15:04 MST",
+			start:    "01 Jan 18 15:03 MST",
+			end:      "01 Jan 18 15:05 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0700",
-			start: "01 Jan 18 15:04 +0700",
-			end:   "03 Jan 18 15:04 +0700",
+			obtained: "02 Jan 18 15:04 +0700",
+			start:    "01 Jan 18 15:04 +0700",
+			end:      "03 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			start: "01 Jan 18 15:03 +0700",
-			end:   "01 Jan 18 15:05 +0700",
+			obtained: "01 Jan 18 15:04 +0700",
+			start:    "01 Jan 18 15:03 +0700",
+			end:      "01 Jan 18 15:05 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			start: "01 Jan 18 15:04 +0800",
-			end:   "01 Jan 18 15:04 +0600",
+			obtained: "01 Jan 18 15:04 +0700",
+			start:    "01 Jan 18 15:04 +0800",
+			end:      "01 Jan 18 15:04 +0600",
 		},
 		{
-			value: "01 Jan 18 15:04 -0700",
-			start: "01 Jan 18 15:04 -0600",
-			end:   "01 Jan 18 15:04 -0800",
+			obtained: "01 Jan 18 15:04 -0700",
+			start:    "01 Jan 18 15:04 -0600",
+			end:      "01 Jan 18 15:04 -0800",
 		},
 	}
 	for _, d := range between {
-		testCheck(c, IsBetween, true, "", d.value, d.start, d.end)
+		testCheck(c, IsBetween, true, "", d.obtained, d.start, d.end)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBetweenValidOutside(c *check.C) {
 	outside := []struct {
-		value interface{}
-		start interface{}
-		end   interface{}
+		obtained interface{}
+		start    interface{}
+		end      interface{}
 	}{
 		{
-			value: "2018-01-02",
-			start: "2018-01-12",
-			end:   "2018-01-22",
+			obtained: "2018-01-02",
+			start:    "2018-01-12",
+			end:      "2018-01-22",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-12T15:04:05Z",
-			end:   "2018-01-22T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-12T15:04:05Z",
+			end:      "2018-01-22T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-02T15:05:05Z",
-			end:   "2018-01-02T15:06:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-02T15:05:05Z",
+			end:      "2018-01-02T15:06:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			start: "2018-01-02T15:04:05+06:00",
-			end:   "2018-01-02T15:04:05+05:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			start:    "2018-01-02T15:04:05+06:00",
+			end:      "2018-01-02T15:04:05+05:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999990Z",
-			start: "2018-01-02T15:04:05.999999995Z",
-			end:   "2018-01-02T15:04:05.999999996Z",
+			obtained: "2018-01-02T15:04:05.999999990Z",
+			start:    "2018-01-02T15:04:05.999999995Z",
+			end:      "2018-01-02T15:04:05.999999996Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-06:00",
-			start: "2018-01-02T15:04:05.999999999-07:00",
-			end:   "2018-01-02T15:04:05.999999999-08:00",
+			obtained: "2018-01-02T15:04:05.999999999-06:00",
+			start:    "2018-01-02T15:04:05.999999999-07:00",
+			end:      "2018-01-02T15:04:05.999999999-08:00",
 		},
 		{
-			value: "02 Jan 18 15:04 MST",
-			start: "02 Jan 18 15:05 MST",
-			end:   "02 Jan 18 15:06 MST",
+			obtained: "02 Jan 18 15:04 MST",
+			start:    "02 Jan 18 15:05 MST",
+			end:      "02 Jan 18 15:06 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0700",
-			start: "02 Jan 18 15:04 +0800",
-			end:   "02 Jan 18 15:04 +0900",
+			obtained: "02 Jan 18 15:04 +0700",
+			start:    "02 Jan 18 15:04 +0800",
+			end:      "02 Jan 18 15:04 +0900",
 		},
 		{
-			value: "2018-01-02",
-			start: "2018-01-02",
-			end:   "2018-01-10",
+			obtained: "2018-01-02",
+			start:    "2018-01-02",
+			end:      "2018-01-10",
 		},
 		{
-			value: "2018-01-02",
-			start: "2018-01-01",
-			end:   "2018-01-02",
+			obtained: "2018-01-02",
+			start:    "2018-01-01",
+			end:      "2018-01-02",
 		},
 		{
-			value: "2018-01-02",
-			start: "2018-01-02",
-			end:   "2018-01-02",
+			obtained: "2018-01-02",
+			start:    "2018-01-02",
+			end:      "2018-01-02",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-02T15:03:05Z",
-			end:   "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-02T15:03:05Z",
+			end:      "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-02T15:04:05Z",
-			end:   "2018-01-02T15:05:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-02T15:04:05Z",
+			end:      "2018-01-02T15:05:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			start: "2018-01-02T15:04:05Z",
-			end:   "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			start:    "2018-01-02T15:04:05Z",
+			end:      "2018-01-02T15:04:05Z",
 		},
 	}
 	for _, d := range outside {
-		testCheck(c, IsBetween, false, "", d.value, d.start, d.end)
+		testCheck(c, IsBetween, false, "", d.obtained, d.start, d.end)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBetweenInvalids(c *check.C) {
 	// Nils
-	testCheck(c, IsBetween, false, "Start must be a Time struct, or parseable.", time.Now(), nil, time.Now())
-	testCheck(c, IsBetween, false, "End must be a Time struct, or parseable.", time.Now(), time.Now(), nil)
-	testCheck(c, IsBetween, false, "Obtained value is not a time.Time struct or parseable as a time.", nil, time.Now(), time.Now())
+	testCheck(c, IsBetween, false, "start must be a Time struct, or parseable.", time.Now(), nil, time.Now())
+	testCheck(c, IsBetween, false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), nil)
+	testCheck(c, IsBetween, false, "obtained value is not a time.Time struct or parseable as a time.", nil, time.Now(), time.Now())
 
 	// wrong type
-	testCheck(c, IsBetween, false, "Start must be a Time struct, or parseable.", time.Now(), 0, time.Now())
-	testCheck(c, IsBetween, false, "End must be a Time struct, or parseable.", time.Now(), time.Now(), 0)
-	testCheck(c, IsBetween, false, "Obtained value is not a time.Time struct or parseable as a time.", 0, time.Now(), time.Now())
-	testCheck(c, IsBetween, false, "Start must be a Time struct, or parseable.", time.Now(), randomStruct{}, time.Now())
-	testCheck(c, IsBetween, false, "End must be a Time struct, or parseable.", time.Now(), time.Now(), randomStruct{})
-	testCheck(c, IsBetween, false, "Obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now(), time.Now())
+	testCheck(c, IsBetween, false, "start must be a Time struct, or parseable.", time.Now(), 0, time.Now())
+	testCheck(c, IsBetween, false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), 0)
+	testCheck(c, IsBetween, false, "obtained value is not a time.Time struct or parseable as a time.", 0, time.Now(), time.Now())
+	testCheck(c, IsBetween, false, "start must be a Time struct, or parseable.", time.Now(), randomStruct{}, time.Now())
+	testCheck(c, IsBetween, false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), randomStruct{})
+	testCheck(c, IsBetween, false, "obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now(), time.Now())
 
 	// Invalid strings
-	testCheck(c, IsBetween, false, "Start must be a Time struct, or parseable.", time.Now(), "this is not a date", time.Now())
-	testCheck(c, IsBetween, false, "End must be a Time struct, or parseable.", time.Now(), time.Now(), "this is not a date")
-	testCheck(c, IsBetween, false, "Obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now(), time.Now())
+	testCheck(c, IsBetween, false, "start must be a Time struct, or parseable.", time.Now(), "this is not a date", time.Now())
+	testCheck(c, IsBetween, false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), "this is not a date")
+	testCheck(c, IsBetween, false, "obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now(), time.Now())
 
 	// Invalids dates
-	testCheck(c, IsBetween, false, "Start must be a Time struct, or parseable.", time.Now(), "2018-31-02", time.Now())
-	testCheck(c, IsBetween, false, "End must be a Time struct, or parseable.", time.Now(), time.Now(), "2018-31-02")
-	testCheck(c, IsBetween, false, "Obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now(), time.Now())
+	testCheck(c, IsBetween, false, "start must be a Time struct, or parseable.", time.Now(), "2018-31-02", time.Now())
+	testCheck(c, IsBetween, false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), "2018-31-02")
+	testCheck(c, IsBetween, false, "obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now(), time.Now())
 
 }
 
 func (s *TimeCheckerS) TestTimeEqualsValid(c *check.C) {
 	before := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-02",
-			t:     "2018-01-02",
+			obtained: "2018-01-02",
+			t:        "2018-01-02",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-02T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-02T15:04:05Z",
 		},
 		{
-			value: "2018-01-01T15:04:05+07:00",
-			t:     "2018-01-01T15:04:05+07:00",
+			obtained: "2018-01-01T15:04:05+07:00",
+			t:        "2018-01-01T15:04:05+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05-07:00",
-			t:     "2018-01-02T15:04:05-07:00",
+			obtained: "2018-01-02T15:04:05-07:00",
+			t:        "2018-01-02T15:04:05-07:00",
 		},
 		{
-			value: "2018-01-01T15:04:05.999999999Z",
-			t:     "2018-01-01T15:04:05.999999999Z",
+			obtained: "2018-01-01T15:04:05.999999999Z",
+			t:        "2018-01-01T15:04:05.999999999Z",
 		},
 		{
-			value: "2018-01-01T15:04:05.999999999+07:00",
-			t:     "2018-01-01T15:04:05.999999999+07:00",
+			obtained: "2018-01-01T15:04:05.999999999+07:00",
+			t:        "2018-01-01T15:04:05.999999999+07:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-07:00",
-			t:     "2018-01-02T15:04:05.999999999-07:00",
+			obtained: "2018-01-02T15:04:05.999999999-07:00",
+			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
-			value: "01 Jan 18 15:04 MST",
-			t:     "01 Jan 18 15:04 MST",
+			obtained: "01 Jan 18 15:04 MST",
+			t:        "01 Jan 18 15:04 MST",
 		},
 		{
-			value: "01 Jan 18 15:04 +0700",
-			t:     "01 Jan 18 15:04 +0700",
+			obtained: "01 Jan 18 15:04 +0700",
+			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
-			value: "01 Jan 18 15:04 -0700",
-			t:     "01 Jan 18 15:04 -0700",
+			obtained: "01 Jan 18 15:04 -0700",
+			t:        "01 Jan 18 15:04 -0700",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, TimeEquals, true, "", d.value, d.t)
+		testCheck(c, TimeEquals, true, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestTimeEqualsDifferent(c *check.C) {
 	after := []struct {
-		value interface{}
-		t     interface{}
+		obtained interface{}
+		t        interface{}
 	}{
 		{
-			value: "2018-01-02",
-			t:     "2018-01-12",
+			obtained: "2018-01-02",
+			t:        "2018-01-12",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-12T15:04:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-12T15:04:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05Z",
-			t:     "2018-01-02T15:05:05Z",
+			obtained: "2018-01-02T15:04:05Z",
+			t:        "2018-01-02T15:05:05Z",
 		},
 		{
-			value: "2018-01-02T15:04:05+07:00",
-			t:     "2018-01-02T15:04:05+06:00",
+			obtained: "2018-01-02T15:04:05+07:00",
+			t:        "2018-01-02T15:04:05+06:00",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999990Z",
-			t:     "2018-01-02T15:04:05.999999995Z",
+			obtained: "2018-01-02T15:04:05.999999990Z",
+			t:        "2018-01-02T15:04:05.999999995Z",
 		},
 		{
-			value: "2018-01-02T15:04:05.999999999-06:00",
-			t:     "2018-01-02T15:04:05.999999999-07:00",
+			obtained: "2018-01-02T15:04:05.999999999-06:00",
+			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
-			value: "02 Jan 18 15:04 MST",
-			t:     "02 Jan 18 15:05 MST",
+			obtained: "02 Jan 18 15:04 MST",
+			t:        "02 Jan 18 15:05 MST",
 		},
 		{
-			value: "02 Jan 18 15:04 +0800",
-			t:     "02 Jan 18 15:04 +0700",
+			obtained: "02 Jan 18 15:04 +0800",
+			t:        "02 Jan 18 15:04 +0700",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, TimeEquals, false, "", d.value, d.t)
+		testCheck(c, TimeEquals, false, "", d.obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestTimeEqualsInvalids(c *check.C) {
 	// Nils
-	testCheck(c, TimeEquals, false, "Time must be a Time struct, or parseable.", time.Now(), nil)
-	testCheck(c, TimeEquals, false, "Obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
+	testCheck(c, TimeEquals, false, "expected must be a Time struct, or parseable.", time.Now(), nil)
+	testCheck(c, TimeEquals, false, "obtained value is not a time.Time struct or parseable as a time.", nil, time.Now())
 
 	// wrong type
-	testCheck(c, TimeEquals, false, "Time must be a Time struct, or parseable.", time.Now(), 0)
-	testCheck(c, TimeEquals, false, "Obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
-	testCheck(c, TimeEquals, false, "Time must be a Time struct, or parseable.", time.Now(), randomStruct{})
-	testCheck(c, TimeEquals, false, "Obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
+	testCheck(c, TimeEquals, false, "expected must be a Time struct, or parseable.", time.Now(), 0)
+	testCheck(c, TimeEquals, false, "obtained value is not a time.Time struct or parseable as a time.", 0, time.Now())
+	testCheck(c, TimeEquals, false, "expected must be a Time struct, or parseable.", time.Now(), randomStruct{})
+	testCheck(c, TimeEquals, false, "obtained value is not a time.Time struct or parseable as a time.", randomStruct{}, time.Now())
 
 	// Invalid strings
-	testCheck(c, TimeEquals, false, "Time must be a Time struct, or parseable.", time.Now(), "this is not a date")
-	testCheck(c, TimeEquals, false, "Obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
+	testCheck(c, TimeEquals, false, "expected must be a Time struct, or parseable.", time.Now(), "this is not a date")
+	testCheck(c, TimeEquals, false, "obtained value is not a time.Time struct or parseable as a time.", "this is not a date", time.Now())
 
 	// Invalids dates
-	testCheck(c, TimeEquals, false, "Time must be a Time struct, or parseable.", time.Now(), "2018-31-02")
-	testCheck(c, TimeEquals, false, "Obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
+	testCheck(c, TimeEquals, false, "expected must be a Time struct, or parseable.", time.Now(), "2018-31-02")
+	testCheck(c, TimeEquals, false, "obtained value is not a time.Time struct or parseable as a time.", "2018-31-02", time.Now())
 
 }
 
@@ -704,43 +702,43 @@ func (s *TimeCheckerS) TestTimeIgnoreValids(c *check.C) {
 func (s *TimeCheckerS) TestTimeIgnoreInvalids(c *check.C) {
 	// Nils
 	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "expected must be a Time struct, or parseable.", time.Now(), nil)
-	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "value must be a Time struct, or parseable.", nil, time.Now())
+	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "obtained must be a Time struct, or parseable.", nil, time.Now())
 
 	// wrong type
 	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "expected must be a Time struct, or parseable.", time.Now(), 0)
-	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "value must be a Time struct, or parseable.", 0, time.Now())
+	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "obtained must be a Time struct, or parseable.", 0, time.Now())
 	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "expected must be a Time struct, or parseable.", time.Now(), randomStruct{})
-	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "value must be a Time struct, or parseable.", randomStruct{}, time.Now())
+	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "obtained must be a Time struct, or parseable.", randomStruct{}, time.Now())
 
 	// Invalid strings
 	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "expected must be a Time struct, or parseable.", time.Now(), "this is not a date")
-	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "value must be a Time struct, or parseable.", "this is not a date", time.Now())
+	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "obtained must be a Time struct, or parseable.", "this is not a date", time.Now())
 
 	// Invalids dates
 	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "expected must be a Time struct, or parseable.", time.Now(), "2018-31-02")
-	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "value must be a Time struct, or parseable.", "2018-31-02", time.Now())
+	testCheck(c, TimeIgnore(TimeEquals, time.Hour), false, "obtained must be a Time struct, or parseable.", "2018-31-02", time.Now())
 
 	// Nils
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "start must be a Time struct, or parseable.", time.Now(), nil, time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), nil)
-	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "value must be a Time struct, or parseable.", nil, time.Now(), time.Now())
+	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "obtained must be a Time struct, or parseable.", nil, time.Now(), time.Now())
 
 	// wrong type
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "start must be a Time struct, or parseable.", time.Now(), 0, time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), 0)
-	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "value must be a Time struct, or parseable.", 0, time.Now(), time.Now())
+	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "obtained must be a Time struct, or parseable.", 0, time.Now(), time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "start must be a Time struct, or parseable.", time.Now(), randomStruct{}, time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), randomStruct{})
-	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "value must be a Time struct, or parseable.", randomStruct{}, time.Now(), time.Now())
+	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "obtained must be a Time struct, or parseable.", randomStruct{}, time.Now(), time.Now())
 
 	// Invalid strings
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "start must be a Time struct, or parseable.", time.Now(), "this is not a date", time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), "this is not a date")
-	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "value must be a Time struct, or parseable.", "this is not a date", time.Now(), time.Now())
+	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "obtained must be a Time struct, or parseable.", "this is not a date", time.Now(), time.Now())
 
 	// Invalids dates
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "start must be a Time struct, or parseable.", time.Now(), "2018-31-02", time.Now())
 	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "end must be a Time struct, or parseable.", time.Now(), time.Now(), "2018-31-02")
-	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "value must be a Time struct, or parseable.", "2018-31-02", time.Now(), time.Now())
+	testCheck(c, TimeIgnore(IsBetween, time.Hour), false, "obtained must be a Time struct, or parseable.", "2018-31-02", time.Now(), time.Now())
 
 }
