@@ -11,7 +11,6 @@ import (
 // to think about check.X versus checker.X.
 var (
 	DeepEquals   = check.DeepEquals
-	Equals       = check.Equals
 	ErrorMatches = check.ErrorMatches
 	FitsTypeOf   = check.FitsTypeOf
 	HasLen       = check.HasLen
