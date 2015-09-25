@@ -7,6 +7,23 @@ import (
 	check "gopkg.in/check.v1"
 )
 
+// As a commodity, we bring all check.Checker variables into the current namespace to avoid having
+// to think about check.X versus checker.X.
+var (
+	DeepEquals   = check.DeepEquals
+	Equals       = check.Equals
+	ErrorMatches = check.ErrorMatches
+	FitsTypeOf   = check.FitsTypeOf
+	HasLen       = check.HasLen
+	Implements   = check.Implements
+	IsNil        = check.IsNil
+	Matches      = check.Matches
+	Not          = check.Not
+	NotNil       = check.NotNil
+	PanicMatches = check.PanicMatches
+	Panics       = check.Panics
+)
+
 // Equaler is an interface implemented if the type has a Equal method.
 // This is used to compare struct using shakers.Equals.
 type Equaler interface {
