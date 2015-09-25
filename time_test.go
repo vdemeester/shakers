@@ -41,135 +41,169 @@ func (s *TimeCheckerS) TestTimeIgnore(c *check.C) {
 
 func (s *TimeCheckerS) TestIsBeforeValid(c *check.C) {
 	before := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-01",
 			t:        "2018-01-02",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-01T15:04:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:03:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-01T15:04:05+07:00",
 			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:03:05+07:00",
 			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+08:00",
 			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05-06:00",
 			t:        "2018-01-02T15:04:05-07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-01T15:04:05.999999999Z",
 			t:        "2018-01-02T15:04:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:03:05.999999999Z",
 			t:        "2018-01-02T15:04:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-01T15:04:05.999999999+07:00",
 			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:03:05.999999999+07:00",
 			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+08:00",
 			t:        "2018-01-02T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-06:00",
 			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "01 Jan 18 15:04 MST",
 			t:        "02 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "01 Jan 18 15:03 MST",
 			t:        "01 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			t:        "02 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:03 +0700",
 			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0800",
 			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 -0600",
 			t:        "01 Jan 18 15:04 -0700",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, IsBefore, true, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsBefore, true, "", obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBeforeValidAfter(c *check.C) {
 	after := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-12",
 			t:        "2018-01-02",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-12T15:04:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:05:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+06:00",
 			t:        "2018-01-02T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999995Z",
 			t:        "2018-01-02T15:04:05.999999990Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-07:00",
 			t:        "2018-01-02T15:04:05.999999999-06:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:05 MST",
 			t:        "02 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0700",
 			t:        "02 Jan 18 15:04 +0800",
 		},
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-02",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, IsBefore, false, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsBefore, false, "", obtained, d.t)
 	}
 }
 
@@ -196,135 +230,169 @@ func (s *TimeCheckerS) TestIsBeforeInvalids(c *check.C) {
 
 func (s *TimeCheckerS) TestIsAfterValid(c *check.C) {
 	before := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-01",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-01T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-02T15:03:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			t:        "2018-01-01T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			t:        "2018-01-02T15:03:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			t:        "2018-01-02T15:04:05+08:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05-07:00",
 			t:        "2018-01-02T15:04:05-06:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999Z",
 			t:        "2018-01-01T15:04:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999Z",
 			t:        "2018-01-02T15:03:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			t:        "2018-01-01T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			t:        "2018-01-02T15:03:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			t:        "2018-01-02T15:04:05.999999999+08:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-07:00",
 			t:        "2018-01-02T15:04:05.999999999-06:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:04 MST",
 			t:        "01 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "01 Jan 18 15:04 MST",
 			t:        "01 Jan 18 15:03 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0700",
 			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			t:        "01 Jan 18 15:03 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			t:        "01 Jan 18 15:04 +0800",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 -0700",
 			t:        "01 Jan 18 15:04 -0600",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, IsAfter, true, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsAfter, true, "", obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestIsAfterValidBefore(c *check.C) {
 	after := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-12",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-12T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-02T15:05:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			t:        "2018-01-02T15:04:05+06:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999990Z",
 			t:        "2018-01-02T15:04:05.999999995Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-06:00",
 			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:04 MST",
 			t:        "02 Jan 18 15:05 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0800",
 			t:        "02 Jan 18 15:04 +0700",
 		},
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-02",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, IsAfter, false, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsAfter, false, "", obtained, d.t)
 	}
 }
 
@@ -351,190 +419,229 @@ func (s *TimeCheckerS) TestIsAfterInvalids(c *check.C) {
 
 func (s *TimeCheckerS) TestIsBetweenValidBetween(c *check.C) {
 	between := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		start    interface{}
 		end      interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			start:    "2018-01-01",
 			end:      "2018-01-03",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-01T15:04:05Z",
 			end:      "2018-01-03T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-02T15:03:05Z",
 			end:      "2018-01-02T15:05:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			start:    "2018-01-01T15:04:05+07:00",
 			end:      "2018-01-03T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			start:    "2018-01-02T15:03:05+07:00",
 			end:      "2018-01-02T15:05:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			start:    "2018-01-02T15:04:05+08:00",
 			end:      "2018-01-02T15:04:05+06:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05-07:00",
 			start:    "2018-01-02T15:04:05-06:00",
 			end:      "2018-01-02T15:04:05-08:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999Z",
 			start:    "2018-01-01T15:04:05.999999999Z",
 			end:      "2018-01-03T15:04:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999Z",
 			start:    "2018-01-02T15:03:05.999999999Z",
 			end:      "2018-01-02T15:05:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			start:    "2018-01-01T15:04:05.999999999+07:00",
 			end:      "2018-01-03T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			start:    "2018-01-02T15:03:05.999999999+07:00",
 			end:      "2018-01-02T15:05:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999+07:00",
 			start:    "2018-01-02T15:04:05.999999999+08:00",
 			end:      "2018-01-02T15:04:05.999999999+06:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-07:00",
 			start:    "2018-01-02T15:04:05.999999999-06:00",
 			end:      "2018-01-02T15:04:05.999999999-08:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:04 MST",
 			start:    "01 Jan 18 15:04 MST",
 			end:      "03 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "01 Jan 18 15:04 MST",
 			start:    "01 Jan 18 15:03 MST",
 			end:      "01 Jan 18 15:05 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0700",
 			start:    "01 Jan 18 15:04 +0700",
 			end:      "03 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			start:    "01 Jan 18 15:03 +0700",
 			end:      "01 Jan 18 15:05 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			start:    "01 Jan 18 15:04 +0800",
 			end:      "01 Jan 18 15:04 +0600",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 -0700",
 			start:    "01 Jan 18 15:04 -0600",
 			end:      "01 Jan 18 15:04 -0800",
 		},
 	}
 	for _, d := range between {
-		testCheck(c, IsBetween, true, "", d.obtained, d.start, d.end)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsBetween, true, "", obtained, d.start, d.end)
 	}
 }
 
 func (s *TimeCheckerS) TestIsBetweenValidOutside(c *check.C) {
 	outside := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		start    interface{}
 		end      interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			start:    "2018-01-12",
 			end:      "2018-01-22",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-12T15:04:05Z",
 			end:      "2018-01-22T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-02T15:05:05Z",
 			end:      "2018-01-02T15:06:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			start:    "2018-01-02T15:04:05+06:00",
 			end:      "2018-01-02T15:04:05+05:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999990Z",
 			start:    "2018-01-02T15:04:05.999999995Z",
 			end:      "2018-01-02T15:04:05.999999996Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-06:00",
 			start:    "2018-01-02T15:04:05.999999999-07:00",
 			end:      "2018-01-02T15:04:05.999999999-08:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:04 MST",
 			start:    "02 Jan 18 15:05 MST",
 			end:      "02 Jan 18 15:06 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0700",
 			start:    "02 Jan 18 15:04 +0800",
 			end:      "02 Jan 18 15:04 +0900",
 		},
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			start:    "2018-01-02",
 			end:      "2018-01-10",
 		},
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			start:    "2018-01-01",
 			end:      "2018-01-02",
 		},
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			start:    "2018-01-02",
 			end:      "2018-01-02",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-02T15:03:05Z",
 			end:      "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-02T15:04:05Z",
 			end:      "2018-01-02T15:05:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			start:    "2018-01-02T15:04:05Z",
 			end:      "2018-01-02T15:04:05Z",
 		},
 	}
 	for _, d := range outside {
-		testCheck(c, IsBetween, false, "", d.obtained, d.start, d.end)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, IsBetween, false, "", obtained, d.start, d.end)
 	}
 }
 
@@ -566,99 +673,124 @@ func (s *TimeCheckerS) TestIsBetweenInvalids(c *check.C) {
 
 func (s *TimeCheckerS) TestTimeEqualsValid(c *check.C) {
 	before := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-02",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-02T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-01T15:04:05+07:00",
 			t:        "2018-01-01T15:04:05+07:00",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05-07:00",
 			t:        "2018-01-02T15:04:05-07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-01T15:04:05.999999999Z",
 			t:        "2018-01-01T15:04:05.999999999Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-01T15:04:05.999999999+07:00",
 			t:        "2018-01-01T15:04:05.999999999+07:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-07:00",
 			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "01 Jan 18 15:04 MST",
 			t:        "01 Jan 18 15:04 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 +0700",
 			t:        "01 Jan 18 15:04 +0700",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "01 Jan 18 15:04 -0700",
 			t:        "01 Jan 18 15:04 -0700",
 		},
 	}
 	for _, d := range before {
-		testCheck(c, TimeEquals, true, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, TimeEquals, true, "", obtained, d.t)
 	}
 }
 
 func (s *TimeCheckerS) TestTimeEqualsDifferent(c *check.C) {
 	after := []struct {
-		obtained interface{}
+		format   string
+		obtained string
 		t        interface{}
 	}{
 		{
+			format:   "2006-01-02",
 			obtained: "2018-01-02",
 			t:        "2018-01-12",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-12T15:04:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05Z",
 			t:        "2018-01-02T15:05:05Z",
 		},
 		{
+			format:   time.RFC3339,
 			obtained: "2018-01-02T15:04:05+07:00",
 			t:        "2018-01-02T15:04:05+06:00",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999990Z",
 			t:        "2018-01-02T15:04:05.999999995Z",
 		},
 		{
+			format:   time.RFC3339Nano,
 			obtained: "2018-01-02T15:04:05.999999999-06:00",
 			t:        "2018-01-02T15:04:05.999999999-07:00",
 		},
 		{
+			format:   time.RFC822,
 			obtained: "02 Jan 18 15:04 MST",
 			t:        "02 Jan 18 15:05 MST",
 		},
 		{
+			format:   time.RFC822Z,
 			obtained: "02 Jan 18 15:04 +0800",
 			t:        "02 Jan 18 15:04 +0700",
 		},
 	}
 	for _, d := range after {
-		testCheck(c, TimeEquals, false, "", d.obtained, d.t)
+		obtained, err := time.Parse(d.format, d.obtained)
+		c.Assert(err, check.IsNil)
+		testCheck(c, TimeEquals, false, "", obtained, d.t)
 	}
 }
 
