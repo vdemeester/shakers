@@ -9,34 +9,64 @@ import (
 )
 
 // Contains checker verifies that string value contains a substring.
-var Contains check.Checker = &containsChecker{
+var Contains check.Checker = &substringChecker{
 	&check.CheckerInfo{
 		Name:   "Contains",
-		Params: []string{"value", "substring"},
+		Params: []string{"obtained", "substring"},
 	},
+	strings.Contains,
 }
 
-type containsChecker struct {
+// ContainsAny checker verifies that any Unicode code points in chars
+// are in the obtained string.
+var ContainsAny check.Checker = &substringChecker{
+	&check.CheckerInfo{
+		Name:   "ContainsAny",
+		Params: []string{"obtained", "chars"},
+	},
+	strings.ContainsAny,
+}
+
+// HasPrefix checker verifies that string value has the specified substring as prefix
+var HasPrefix check.Checker = &substringChecker{
+	&check.CheckerInfo{
+		Name:   "HasPrefix",
+		Params: []string{"obtained", "prefix"},
+	},
+	strings.HasPrefix,
+}
+
+// HasSuffix checker verifies that string value has the specified substring as prefix
+var HasSuffix check.Checker = &substringChecker{
+	&check.CheckerInfo{
+		Name:   "HasSuffix",
+		Params: []string{"obtained", "suffix"},
+	},
+	strings.HasSuffix,
+}
+
+type substringChecker struct {
 	*check.CheckerInfo
+	substringFunction func(string, string) bool
 }
 
-func (checker *containsChecker) Check(params []interface{}, names []string) (bool, string) {
-	return contains(params[0], params[1])
+func (checker *substringChecker) Check(params []interface{}, names []string) (bool, string) {
+	return applyStringFunction(checker.substringFunction, params[0], params[1])
 }
 
-func contains(value, substring interface{}) (bool, string) {
+func applyStringFunction(stringFunction func(string, string) bool, obtained, substring interface{}) (bool, string) {
 	substringStr, ok := substring.(string)
 	if !ok {
-		return false, "Substring must be a string"
+		return false, "substring value must be a string."
 	}
-	valueStr, valueIsStr := value.(string)
-	if !valueIsStr {
-		if valueWithStr, valueHasStr := value.(fmt.Stringer); valueHasStr {
-			valueStr, valueIsStr = valueWithStr.String(), true
+	obtainedString, obtainedIsStr := obtained.(string)
+	if !obtainedIsStr {
+		if obtainedWithStringer, obtainedHasStringer := obtained.(fmt.Stringer); obtainedHasStringer {
+			obtainedString, obtainedIsStr = obtainedWithStringer.String(), true
 		}
 	}
-	if valueIsStr {
-		return strings.Contains(valueStr, substringStr), ""
+	if obtainedIsStr {
+		return stringFunction(obtainedString, substringStr), ""
 	}
-	return false, "Obtained value is not a string and has no .String()"
+	return false, "obtained value is not a string and has no .String()."
 }
