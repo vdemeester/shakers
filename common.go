@@ -30,7 +30,7 @@ type Equaler interface {
 }
 
 // Equals checker verifies the obtained value is equal to the specified one.
-// It's is smart in a wait that it supports several *types* (built-in, Equaler,
+// It is smart in a way that it supports several *types* (built-in, Equaler,
 // time.Time)
 //
 //    c.Assert(myStruct, Equals, aStruct, check.Commentf("bouuuhh"))
@@ -43,8 +43,50 @@ var Equals check.Checker = &equalChecker{
 	},
 }
 
+// Lower checker verifies the obtained value is lower to the specified one.
+// It is smart in a way that it supports several *types* (built-in, Less,
+// time.Time)
+//
+//    c.Assert(myStruct, Lower, aStruct, check.Commentf("hh"))
+//    c.Assert(myInt, Lower, 0, check.Commentf("hh"))
+//
+var Lower check.Checker = &lowerChecker{
+	&check.CheckerInfo{
+		Name:   "Lower",
+		Params: []string{"obtained", "expected"},
+	},
+}
+
+// Greater checker verifies the obtained value is greater to the specified one.
+// It is smart in a way that it supports several *types* (built-in, Less,
+// time.Time)
+//
+//    c.Assert(myStruct, Lower, aStruct, check.Commentf("hh"))
+//    c.Assert(myInt, Lower, 0, check.Commentf("hh"))
+//
+var Greater check.Checker = &greaterChecker{
+	&check.CheckerInfo{
+		Name:   "Greater",
+		Params: []string{"obtained", "expected"},
+	},
+}
+
+type greaterChecker struct {
+	*check.CheckerInfo
+}
+
+func (checker *greaterChecker) Check(params []interface{}, names []string) (bool, string) {
+	return greater(params[0], params[1])
+}
+
+type lowerChecker struct {
+	*check.CheckerInfo
+	equal bool
+}
+
 type equalChecker struct {
 	*check.CheckerInfo
+	equal bool
 }
 
 func (checker *equalChecker) Check(params []interface{}, names []string) (bool, string) {
