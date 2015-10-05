@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"time"
 
-	check "gopkg.in/check.v1"
+	"github.com/go-check/check"
 )
 
 // As a commodity, we bring all check.Checker variables into the current namespace to avoid having

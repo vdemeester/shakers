@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	check "gopkg.in/check.v1"
+	"github.com/go-check/check"
 )
 
 // Contains checker verifies that string value contains a substring.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	check "gopkg.in/check.v1"
+	"github.com/go-check/check"
 )
 
 // Default format when parsing (in addition to RFC and default time formats..)
