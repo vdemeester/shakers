@@ -3,10 +3,8 @@ machine:
     - docker
 
 dependencies:
-  pre:
-    - make validate
   override:
-    - make binary
+    - make validate
 
 test:
   override:
