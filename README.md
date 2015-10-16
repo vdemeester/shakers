@@ -22,24 +22,3 @@ ok      github.com/vdemeester/shakers   0.015s  coverage: 96.0% of statements
 
 Test success
 ```
-
-### Using `godep`
-
-The idea behind `godep` is the following :
-
-- when checkout(ing) a project, **run `godep restore`** to install
-  (`go get …`) the dependencies in the `GOPATH`.
-- if you need another dependency, `go get` it, import and use it in
-  the source, and **run `godep save ./...` to save it in
-  `Godeps/Godeps.json` and vendoring it in `Godeps/_workspace/src`.
-
-```bash
-$ godep restore
-$ godep go test -v -cover ./...
-=== RUN   Test
-OK: 26 passed
---- PASS: Test (0.01s)
-PASS
-coverage: 96.0% of statements
-ok      _/home/vincent/src/github/vdemeester/shakers    0.009s
-```
