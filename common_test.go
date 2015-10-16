@@ -80,7 +80,7 @@ func (s *CommonCheckerS) TestGreaterThanInfo(c *check.C) {
 	testInfo(c, GreaterThan, "GreaterThan", []string{"obtained", "expected"})
 }
 
-func (s *CommonCheckerS) TestGreaterThanValidsEquals(c *check.C) {
+func (s *CommonCheckerS) TestGreaterThanValidsGreater(c *check.C) {
 	myTime, err := time.Parse("2006-01-02", "2018-01-01")
 	if err != nil {
 		c.Fatal(err)
@@ -142,11 +142,93 @@ func (s *CommonCheckerS) TestGreaterThanInvalids(c *check.C) {
 	testCheck(c, GreaterThan, false, "expected must be a Time struct, or parseable.", myTime, "invalid")
 }
 
+func (s *CommonCheckerS) TestGreaterOrEqualThanInfo(c *check.C) {
+	testInfo(c, GreaterOrEqualThan, "GreaterOrEqualThan", []string{"obtained", "expected"})
+}
+
+func (s *CommonCheckerS) TestGreaterOrEqualThanValidsGreaterOrEquals(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, GreaterOrEqualThan, true, "", 2, 1)
+	testCheck(c, GreaterOrEqualThan, true, "", 0, -1)
+	testCheck(c, GreaterOrEqualThan, true, "", float32(2), float32(0))
+	testCheck(c, GreaterOrEqualThan, true, "", float64(2), float64(0))
+	testCheck(c, GreaterOrEqualThan, true, "", byte(2), byte(1))
+	testCheck(c, GreaterOrEqualThan, true, "", int(2), int(1))
+	testCheck(c, GreaterOrEqualThan, true, "", int8(2), int8(1))
+	testCheck(c, GreaterOrEqualThan, true, "", int16(2), int16(1))
+	testCheck(c, GreaterOrEqualThan, true, "", int32(2), int32(1))
+	testCheck(c, GreaterOrEqualThan, true, "", int64(2), int64(1))
+	testCheck(c, GreaterOrEqualThan, true, "", uint(2), uint(1))
+	testCheck(c, GreaterOrEqualThan, true, "", uint8(2), uint8(1))
+	testCheck(c, GreaterOrEqualThan, true, "", uint16(2), uint16(1))
+	testCheck(c, GreaterOrEqualThan, true, "", uint32(2), uint32(1))
+	testCheck(c, GreaterOrEqualThan, true, "", uint64(2), uint64(1))
+	testCheck(c, GreaterOrEqualThan, true, "", myTime, "2017-12-31")
+	testCheck(c, GreaterOrEqualThan, true, "", 2, 2)
+	testCheck(c, GreaterOrEqualThan, true, "", -1, -1)
+	testCheck(c, GreaterOrEqualThan, true, "", float32(2), float32(2))
+	testCheck(c, GreaterOrEqualThan, true, "", float64(2), float64(2))
+	testCheck(c, GreaterOrEqualThan, true, "", byte(2), byte(2))
+	testCheck(c, GreaterOrEqualThan, true, "", int(2), int(2))
+	testCheck(c, GreaterOrEqualThan, true, "", int8(2), int8(2))
+	testCheck(c, GreaterOrEqualThan, true, "", int16(2), int16(2))
+	testCheck(c, GreaterOrEqualThan, true, "", int32(2), int32(2))
+	testCheck(c, GreaterOrEqualThan, true, "", int64(2), int64(2))
+	testCheck(c, GreaterOrEqualThan, true, "", uint(2), uint(2))
+	testCheck(c, GreaterOrEqualThan, true, "", uint8(2), uint8(2))
+	testCheck(c, GreaterOrEqualThan, true, "", uint16(2), uint16(2))
+	testCheck(c, GreaterOrEqualThan, true, "", uint32(2), uint32(2))
+	testCheck(c, GreaterOrEqualThan, true, "", uint64(2), uint64(2))
+	// testCheck(c, GreaterOrEqualThan, true, "", myTime, "2018-01-01")
+}
+
+func (s *CommonCheckerS) TestGreaterOrEqualThanValidsDifferent(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, GreaterOrEqualThan, false, "", 1, 2)
+	testCheck(c, GreaterOrEqualThan, false, "", -1, 0)
+	testCheck(c, GreaterOrEqualThan, false, "", float32(0), float32(2))
+	testCheck(c, GreaterOrEqualThan, false, "", float64(0), float64(2))
+	testCheck(c, GreaterOrEqualThan, false, "", byte(1), byte(2))
+	testCheck(c, GreaterOrEqualThan, false, "", int(1), int(2))
+	testCheck(c, GreaterOrEqualThan, false, "", int8(1), int8(2))
+	testCheck(c, GreaterOrEqualThan, false, "", int16(1), int16(2))
+	testCheck(c, GreaterOrEqualThan, false, "", int32(1), int32(2))
+	testCheck(c, GreaterOrEqualThan, false, "", int64(1), int64(2))
+	testCheck(c, GreaterOrEqualThan, false, "", uint(1), uint(2))
+	testCheck(c, GreaterOrEqualThan, false, "", uint8(1), uint8(2))
+	testCheck(c, GreaterOrEqualThan, false, "", uint16(1), uint16(2))
+	testCheck(c, GreaterOrEqualThan, false, "", uint32(1), uint32(2))
+	testCheck(c, GreaterOrEqualThan, false, "", uint64(1), uint64(2))
+	testCheck(c, GreaterOrEqualThan, false, "", myTime, "2018-01-01")
+	testCheck(c, GreaterOrEqualThan, false, "", myTime, "2018-01-02")
+}
+
+func (s *CommonCheckerS) TestGreaterOrEqualThanInvalids(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, GreaterOrEqualThan, false, "obtained value and expected value have not the same type.", 1, "string")
+	testCheck(c, GreaterOrEqualThan, false, "obtained value and expected value have not the same type.", "string", 1)
+	testCheck(c, GreaterOrEqualThan, false, "obtained value and expected value have not the same type.", 1, complex128(1+2i))
+	testCheck(c, GreaterOrEqualThan, false, "expected must be a Time struct, or parseable.", myTime, 1)
+	testCheck(c, GreaterOrEqualThan, false, "expected must be a Time struct, or parseable.", myTime, "invalid")
+}
+
 func (s *CommonCheckerS) TestLessThanInfo(c *check.C) {
 	testInfo(c, LessThan, "LessThan", []string{"obtained", "expected"})
 }
 
-func (s *CommonCheckerS) TestLessThanValidsEquals(c *check.C) {
+func (s *CommonCheckerS) TestLessThanValidsLess(c *check.C) {
 	myTime, err := time.Parse("2006-01-02", "2018-01-01")
 	if err != nil {
 		c.Fatal(err)
@@ -206,6 +288,88 @@ func (s *CommonCheckerS) TestLessThanInvalids(c *check.C) {
 	testCheck(c, LessThan, false, "obtained value and expected value have not the same type.", 1, complex128(1+2i))
 	testCheck(c, LessThan, false, "expected must be a Time struct, or parseable.", myTime, 1)
 	testCheck(c, LessThan, false, "expected must be a Time struct, or parseable.", myTime, "invalid")
+}
+
+func (s *CommonCheckerS) TestLessEqualThanInfo(c *check.C) {
+	testInfo(c, LessOrEqualThan, "LessOrEqualThan", []string{"obtained", "expected"})
+}
+
+func (s *CommonCheckerS) TestLessOrEqualThanValidsLessOrEquals(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, LessOrEqualThan, true, "", 1, 2)
+	testCheck(c, LessOrEqualThan, true, "", -1, 0)
+	testCheck(c, LessOrEqualThan, true, "", float32(0), float32(2))
+	testCheck(c, LessOrEqualThan, true, "", float64(0), float64(2))
+	testCheck(c, LessOrEqualThan, true, "", byte(1), byte(2))
+	testCheck(c, LessOrEqualThan, true, "", int(1), int(2))
+	testCheck(c, LessOrEqualThan, true, "", int8(1), int8(2))
+	testCheck(c, LessOrEqualThan, true, "", int16(1), int16(2))
+	testCheck(c, LessOrEqualThan, true, "", int32(1), int32(2))
+	testCheck(c, LessOrEqualThan, true, "", int64(1), int64(2))
+	testCheck(c, LessOrEqualThan, true, "", uint(1), uint(2))
+	testCheck(c, LessOrEqualThan, true, "", uint8(1), uint8(2))
+	testCheck(c, LessOrEqualThan, true, "", uint16(1), uint16(2))
+	testCheck(c, LessOrEqualThan, true, "", uint32(1), uint32(2))
+	testCheck(c, LessOrEqualThan, true, "", uint64(1), uint64(2))
+	testCheck(c, LessOrEqualThan, true, "", myTime, "2018-01-02")
+	testCheck(c, LessOrEqualThan, true, "", 1, 1)
+	testCheck(c, LessOrEqualThan, true, "", -1, -1)
+	testCheck(c, LessOrEqualThan, true, "", float32(2), float32(2))
+	testCheck(c, LessOrEqualThan, true, "", float64(2), float64(2))
+	testCheck(c, LessOrEqualThan, true, "", byte(2), byte(2))
+	testCheck(c, LessOrEqualThan, true, "", int(2), int(2))
+	testCheck(c, LessOrEqualThan, true, "", int8(2), int8(2))
+	testCheck(c, LessOrEqualThan, true, "", int16(2), int16(2))
+	testCheck(c, LessOrEqualThan, true, "", int32(2), int32(2))
+	testCheck(c, LessOrEqualThan, true, "", int64(2), int64(2))
+	testCheck(c, LessOrEqualThan, true, "", uint(2), uint(2))
+	testCheck(c, LessOrEqualThan, true, "", uint8(2), uint8(2))
+	testCheck(c, LessOrEqualThan, true, "", uint16(2), uint16(2))
+	testCheck(c, LessOrEqualThan, true, "", uint32(2), uint32(2))
+	testCheck(c, LessOrEqualThan, true, "", uint64(2), uint64(2))
+	// testCheck(c, LessOrEqualThan, true, "", myTime, "2018-01-02")
+}
+
+func (s *CommonCheckerS) TestLessOrEqualThanValidsDifferent(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, LessOrEqualThan, false, "", 2, 1)
+	testCheck(c, LessOrEqualThan, false, "", 0, -1)
+	testCheck(c, LessOrEqualThan, false, "", float32(2), float32(0))
+	testCheck(c, LessOrEqualThan, false, "", float64(2), float64(0))
+	testCheck(c, LessOrEqualThan, false, "", byte(2), byte(1))
+	testCheck(c, LessOrEqualThan, false, "", int(2), int(1))
+	testCheck(c, LessOrEqualThan, false, "", int8(2), int8(1))
+	testCheck(c, LessOrEqualThan, false, "", int16(2), int16(1))
+	testCheck(c, LessOrEqualThan, false, "", int32(2), int32(1))
+	testCheck(c, LessOrEqualThan, false, "", int64(2), int64(1))
+	testCheck(c, LessOrEqualThan, false, "", uint(2), uint(1))
+	testCheck(c, LessOrEqualThan, false, "", uint8(2), uint8(1))
+	testCheck(c, LessOrEqualThan, false, "", uint16(2), uint16(1))
+	testCheck(c, LessOrEqualThan, false, "", uint32(2), uint32(1))
+	testCheck(c, LessOrEqualThan, false, "", uint64(2), uint64(1))
+	testCheck(c, LessOrEqualThan, false, "", myTime, "2018-01-01")
+	testCheck(c, LessOrEqualThan, false, "", myTime, "2017-12-31")
+}
+
+func (s *CommonCheckerS) TestLessOrEqualThanInvalids(c *check.C) {
+	myTime, err := time.Parse("2006-01-02", "2018-01-01")
+	if err != nil {
+		c.Fatal(err)
+	}
+
+	testCheck(c, LessOrEqualThan, false, "obtained value and expected value have not the same type.", 1, "string")
+	testCheck(c, LessOrEqualThan, false, "obtained value and expected value have not the same type.", "string", 1)
+	testCheck(c, LessOrEqualThan, false, "obtained value and expected value have not the same type.", 1, complex128(1+2i))
+	testCheck(c, LessOrEqualThan, false, "expected must be a Time struct, or parseable.", myTime, 1)
+	testCheck(c, LessOrEqualThan, false, "expected must be a Time struct, or parseable.", myTime, "invalid")
 }
 
 func Test(t *testing.T) {
