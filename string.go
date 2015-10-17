@@ -129,3 +129,40 @@ func (checker *substringCountChecker) Check(params []interface{}, names []string
 	}
 	return false, "obtained value is not a string and has no .String()."
 }
+
+// IsLower checker verifies that the obtained value is in lower case
+var IsLower check.Checker = &stringTransformChecker{
+	&check.CheckerInfo{
+		Name:   "IsLower",
+		Params: []string{"obtained"},
+	},
+	strings.ToLower,
+}
+
+// IsUpper checker verifies that the obtained value is in lower case
+var IsUpper check.Checker = &stringTransformChecker{
+	&check.CheckerInfo{
+		Name:   "IsUpper",
+		Params: []string{"obtained"},
+	},
+	strings.ToUpper,
+}
+
+type stringTransformChecker struct {
+	*check.CheckerInfo
+	stringFunction func(string) string
+}
+
+func (checker *stringTransformChecker) Check(params []interface{}, names []string) (bool, string) {
+	obtained := params[0]
+	obtainedString, obtainedIsStr := obtained.(string)
+	if !obtainedIsStr {
+		if obtainedWithStringer, obtainedHasStringer := obtained.(fmt.Stringer); obtainedHasStringer {
+			obtainedString, obtainedIsStr = obtainedWithStringer.String(), true
+		}
+	}
+	if obtainedIsStr {
+		return checker.stringFunction(obtainedString) == obtainedString, ""
+	}
+	return false, "obtained value is not a string and has no .String()."
+}
