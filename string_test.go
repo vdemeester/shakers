@@ -34,7 +34,7 @@ func (s *StringCheckerS) TestContainsAny(c *check.C) {
 	testCheck(c, ContainsAny, false, "", "", "")
 
 	testCheck(c, ContainsAny, false, "obtained value is not a string and has no .String().", 12, "1")
-	testCheck(c, ContainsAny, false, "substring value must be a string.", "", 1)
+	testCheck(c, ContainsAny, false, "chars value must be a string.", "", 1)
 }
 
 func (s *StringCheckerS) TestHasPrefix(c *check.C) {
@@ -47,7 +47,7 @@ func (s *StringCheckerS) TestHasPrefix(c *check.C) {
 	testCheck(c, HasPrefix, true, "", "", "")
 
 	testCheck(c, HasPrefix, false, "obtained value is not a string and has no .String().", 12, "1")
-	testCheck(c, HasPrefix, false, "substring value must be a string.", "", 1)
+	testCheck(c, HasPrefix, false, "prefix value must be a string.", "", 1)
 }
 
 func (s *StringCheckerS) TestHasSuffix(c *check.C) {
@@ -60,5 +60,75 @@ func (s *StringCheckerS) TestHasSuffix(c *check.C) {
 	testCheck(c, HasSuffix, true, "", "", "")
 
 	testCheck(c, HasSuffix, false, "obtained value is not a string and has no .String().", 12, "1")
-	testCheck(c, HasSuffix, false, "substring value must be a string.", "", 1)
+	testCheck(c, HasSuffix, false, "suffix value must be a string.", "", 1)
+}
+
+func (s *StringCheckerS) TestEqualFold(c *check.C) {
+	testInfo(c, EqualFold, "EqualFold", []string{"obtained", "expected"})
+
+	testCheck(c, EqualFold, true, "", "abcd", "ABCD")
+	testCheck(c, EqualFold, true, "", "abcd", "AbCd")
+	testCheck(c, EqualFold, true, "", "", "")
+	testCheck(c, EqualFold, true, "", "🐸", "🐸")
+	testCheck(c, EqualFold, false, "", "🐭", "🐹")
+	testCheck(c, EqualFold, false, "", "abcd", "acde")
+	testCheck(c, EqualFold, false, "", "", "bc")
+	testCheck(c, EqualFold, false, "", "abcd", "")
+
+	testCheck(c, EqualFold, false, "obtained value is not a string and has no .String().", 12, "1")
+	testCheck(c, EqualFold, false, "expected value must be a string.", "", 1)
+}
+
+func (s *StringCheckerS) TestCount(c *check.C) {
+	testInfo(c, Count, "Count", []string{"obtained", "sep", "expected"})
+
+	testCheck(c, Count, true, "", "abcd", "a", 1)
+	testCheck(c, Count, true, "", "abcdAbcd", "a", 1)
+	testCheck(c, Count, true, "", "abcd", "e", 0)
+	testCheck(c, Count, true, "", "ABCD", "a", 0)
+	testCheck(c, Count, true, "", "aaaaa", "a", 5)
+	testCheck(c, Count, true, "", "🐭🐹", "🐹", 1)
+	testCheck(c, Count, false, "", "aaaaa", "a", 1)
+	testCheck(c, Count, false, "", "abcd", "a", 0)
+	testCheck(c, Count, false, "", "🐭🐹", "a", 1)
+
+	testCheck(c, Count, false, "obtained value is not a string and has no .String().", 12, "1", 1)
+	testCheck(c, Count, false, "sep value must be a string.", "", 1, 1)
+	testCheck(c, Count, false, "", "", "", "")
+}
+
+func (s *StringCheckerS) TestIndex(c *check.C) {
+	testInfo(c, Index, "Index", []string{"obtained", "sep", "expected"})
+
+	testCheck(c, Index, true, "", "abcd", "a", 0)
+	testCheck(c, Index, true, "", "abcdAbcd", "a", 0)
+	testCheck(c, Index, true, "", "abcdAbcd", "A", 4)
+	testCheck(c, Index, true, "", "abcd", "e", -1)
+	testCheck(c, Index, true, "", "ABCD", "a", -1)
+	testCheck(c, Index, true, "", "aaaaa", "a", 0)
+	testCheck(c, Index, false, "", "dcba", "a", 0)
+	testCheck(c, Index, false, "", "abcd", "d", 0)
+
+	testCheck(c, Index, false, "obtained value is not a string and has no .String().", 12, "1", 1)
+	testCheck(c, Index, false, "sep value must be a string.", "", 1, 1)
+	testCheck(c, Index, false, "", "", "", "")
+}
+
+func (s *StringCheckerS) TestIndexAny(c *check.C) {
+	testInfo(c, IndexAny, "IndexAny", []string{"obtained", "chars", "expected"})
+
+	testCheck(c, IndexAny, true, "", "abcd", "b", 1)
+	testCheck(c, IndexAny, true, "", "abcdAbcd", "b & c", 1)
+	testCheck(c, IndexAny, true, "", "abcdAbcd", "bc", 1)
+	testCheck(c, IndexAny, true, "", "abcdAbcde", "A & e", 4)
+	testCheck(c, IndexAny, true, "", "abcdAbcde", "Ae", 4)
+	testCheck(c, IndexAny, true, "", "abcd", "e", -1)
+	testCheck(c, IndexAny, true, "", "ABCD", "a", -1)
+	testCheck(c, IndexAny, false, "", "abcd", "d", 0)
+	testCheck(c, IndexAny, false, "", "dcba", "a & b", 0)
+	testCheck(c, IndexAny, false, "", "dcba", "ab", 0)
+
+	testCheck(c, IndexAny, false, "obtained value is not a string and has no .String().", 12, "1", 1)
+	testCheck(c, IndexAny, false, "chars value must be a string.", "", 1, 1)
+	testCheck(c, IndexAny, false, "", "", "", "")
 }

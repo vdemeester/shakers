@@ -8,7 +8,7 @@ import (
 	"github.com/go-check/check"
 )
 
-// Contains checker verifies that string value contains a substring.
+// Contains checker verifies that obtained value contains a substring.
 var Contains check.Checker = &substringChecker{
 	&check.CheckerInfo{
 		Name:   "Contains",
@@ -27,7 +27,7 @@ var ContainsAny check.Checker = &substringChecker{
 	strings.ContainsAny,
 }
 
-// HasPrefix checker verifies that string value has the specified substring as prefix
+// HasPrefix checker verifies that obtained value has the specified substring as prefix
 var HasPrefix check.Checker = &substringChecker{
 	&check.CheckerInfo{
 		Name:   "HasPrefix",
@@ -36,7 +36,7 @@ var HasPrefix check.Checker = &substringChecker{
 	strings.HasPrefix,
 }
 
-// HasSuffix checker verifies that string value has the specified substring as prefix
+// HasSuffix checker verifies that obtained value has the specified substring as prefix
 var HasSuffix check.Checker = &substringChecker{
 	&check.CheckerInfo{
 		Name:   "HasSuffix",
@@ -45,19 +45,26 @@ var HasSuffix check.Checker = &substringChecker{
 	strings.HasSuffix,
 }
 
+// EqualFold checker verifies that obtained value is, interpreted as UTF-8 strings, are equal under Unicode case-folding.
+var EqualFold check.Checker = &substringChecker{
+	&check.CheckerInfo{
+		Name:   "EqualFold",
+		Params: []string{"obtained", "expected"},
+	},
+	strings.EqualFold,
+}
+
 type substringChecker struct {
 	*check.CheckerInfo
 	substringFunction func(string, string) bool
 }
 
 func (checker *substringChecker) Check(params []interface{}, names []string) (bool, string) {
-	return applyStringFunction(checker.substringFunction, params[0], params[1])
-}
-
-func applyStringFunction(stringFunction func(string, string) bool, obtained, substring interface{}) (bool, string) {
+	obtained := params[0]
+	substring := params[1]
 	substringStr, ok := substring.(string)
 	if !ok {
-		return false, "substring value must be a string."
+		return false, fmt.Sprintf("%s value must be a string.", names[1])
 	}
 	obtainedString, obtainedIsStr := obtained.(string)
 	if !obtainedIsStr {
@@ -66,7 +73,59 @@ func applyStringFunction(stringFunction func(string, string) bool, obtained, sub
 		}
 	}
 	if obtainedIsStr {
-		return stringFunction(obtainedString, substringStr), ""
+		return checker.substringFunction(obtainedString, substringStr), ""
+	}
+	return false, "obtained value is not a string and has no .String()."
+}
+
+// IndexAny checker verifies that the index of the first instance of any Unicode code point from chars in the obtained value is equal to expected
+var IndexAny check.Checker = &substringCountChecker{
+	&check.CheckerInfo{
+		Name:   "IndexAny",
+		Params: []string{"obtained", "chars", "expected"},
+	},
+	strings.IndexAny,
+}
+
+// Index checker verifies that the index of the first instance of sep in the obtained value is equal to expected
+var Index check.Checker = &substringCountChecker{
+	&check.CheckerInfo{
+		Name:   "Index",
+		Params: []string{"obtained", "sep", "expected"},
+	},
+	strings.Index,
+}
+
+// Count checker verifies that obtained value has the specified number of non-overlapping instances of sep
+var Count check.Checker = &substringCountChecker{
+	&check.CheckerInfo{
+		Name:   "Count",
+		Params: []string{"obtained", "sep", "expected"},
+	},
+	strings.Count,
+}
+
+type substringCountChecker struct {
+	*check.CheckerInfo
+	substringFunction func(string, string) int
+}
+
+func (checker *substringCountChecker) Check(params []interface{}, names []string) (bool, string) {
+	obtained := params[0]
+	substring := params[1]
+	expected := params[2]
+	substringStr, ok := substring.(string)
+	if !ok {
+		return false, fmt.Sprintf("%s value must be a string.", names[1])
+	}
+	obtainedString, obtainedIsStr := obtained.(string)
+	if !obtainedIsStr {
+		if obtainedWithStringer, obtainedHasStringer := obtained.(fmt.Stringer); obtainedHasStringer {
+			obtainedString, obtainedIsStr = obtainedWithStringer.String(), true
+		}
+	}
+	if obtainedIsStr {
+		return checker.substringFunction(obtainedString, substringStr) == expected, ""
 	}
 	return false, "obtained value is not a string and has no .String()."
 }
