@@ -132,3 +132,31 @@ func (s *StringCheckerS) TestIndexAny(c *check.C) {
 	testCheck(c, IndexAny, false, "chars value must be a string.", "", 1, 1)
 	testCheck(c, IndexAny, false, "", "", "", "")
 }
+
+func (s *StringCheckerS) TestIsLower(c *check.C) {
+	testInfo(c, IsLower, "IsLower", []string{"obtained"})
+
+	testCheck(c, IsLower, true, "", "abcd")
+	testCheck(c, IsLower, true, "", "1234")
+	testCheck(c, IsLower, true, "", "abcd abcde")
+	testCheck(c, IsLower, true, "", "хлеб")
+	testCheck(c, IsLower, false, "", "ABCD")
+	testCheck(c, IsLower, false, "", "Abcd")
+	testCheck(c, IsLower, false, "", "ABCD ABCD")
+
+	testCheck(c, IsLower, false, "obtained value is not a string and has no .String().", 12)
+}
+
+func (s *StringCheckerS) TestIsUpper(c *check.C) {
+	testInfo(c, IsUpper, "IsUpper", []string{"obtained"})
+
+	testCheck(c, IsUpper, true, "", "1234")
+	testCheck(c, IsUpper, true, "", "ABCD")
+	testCheck(c, IsUpper, true, "", "ABCD ABCD")
+	testCheck(c, IsUpper, true, "", "ХЛЕБ")
+	testCheck(c, IsUpper, false, "", "abcd")
+	testCheck(c, IsUpper, false, "", "Abcd")
+	testCheck(c, IsUpper, false, "", "abcd abcde")
+
+	testCheck(c, IsUpper, false, "obtained value is not a string and has no .String().", 12)
+}
