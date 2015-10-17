@@ -35,6 +35,3 @@ build:
 shell: build
 	$(DOCKER_RUN_SHAKERS) /bin/bash
 
-run-dev:
-	go build
-	./traefik
