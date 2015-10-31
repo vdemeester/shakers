@@ -3,10 +3,11 @@ set -e
 
 # List of bundles to create when no argument is passed
 DEFAULT_BUNDLES=(
-	validate-gofmt
-	binary
-        
-	test-unit
+    validate-gofmt
+    validate-golint
+    validate-govet
+
+    test-unit
 )
 
 bundle() {
