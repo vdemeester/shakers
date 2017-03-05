@@ -1,7 +1,7 @@
 package shakers
 
 import (
-	"github.com/go-check/check"
+	"gopkg.in/check.v1"
 )
 
 // True checker verifies the obtained value is true

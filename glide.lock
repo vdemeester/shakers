@@ -1,0 +1,6 @@
+hash: c88f93fd5edd88e7b4ab68f56b2e45b91de282b6f743900c13e9a1372353f5d9
+updated: 2017-03-05T14:34:46.368854033+01:00
+imports:
+- name: gopkg.in/check.v1
+  version: 11d3bc7aa68e238947792f30573146a3231fc0f1
+testImports: []
